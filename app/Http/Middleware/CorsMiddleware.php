@@ -2,11 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Cookie;
+
 class CorsMiddleware {
 
     public function handle($request, \Closure $next){
 
-        error_log('CORS processing: ' . $request->getMethod());
+       // error_log('CORS processing: ' . $request->getMethod());
 
 	    $headers = [
             'Access-Control-Allow-Origin'      => '*',

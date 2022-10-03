@@ -131,8 +131,8 @@ class TodoController extends Controller
      *     @OA\Response(response="200", description="A todo belonging to current user")
      * )
      */
-    public function get(Request $request, int $user_id, int $id): JsonResponse{
-
+    public function get(Request $request, int $user_id = null, int $id = null): JsonResponse{
+        error_log($this->integration_id);
         $query = Todo::where("integration_id", $this->integration_id);
         $query->where('id',$id);
 
@@ -142,13 +142,13 @@ class TodoController extends Controller
 
         $result = $query->first();
 
-        if(!$this->secure_mode){
+        if($result && !$this->secure_mode){
             $result->makeHidden(['user_id', 'author']);
         }
         if($result)
             return response()->json($result);
         else
-            return response()->json("Todo ${id} not found.", 404);
+            return response()->json("Todo {$id} not found.", 404);
     }
 
     /**
@@ -236,7 +236,7 @@ class TodoController extends Controller
     public function post(Request $request) : JsonResponse{
 
         $this->validate($request, [
-            'description' => 'required',
+            'description' => 'required|string|max:256',
             'completed' => 'boolean',
             'meta' => 'array'
         ]);
@@ -399,7 +399,7 @@ class TodoController extends Controller
             ($todo->user_id == null || $todo->user_id === $this->current_user->id )
             ) {
             $this->validate($request, [
-                'description' => 'required',
+                'description' => 'required|string|max:256',
                 'completed' => 'boolean',
                 'meta' => 'array'
             ]);

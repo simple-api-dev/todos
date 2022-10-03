@@ -7,7 +7,7 @@ that take into account things like user authentication.*
 
 #### Features:
 - Built using Laravel Lumen 8 and php 8.1
-- Swagger documenation
+- Swagger documentation
 - Google Recaptcha
 - Mailgun integration
 - Custom Authentication middleware

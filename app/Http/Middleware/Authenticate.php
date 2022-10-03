@@ -48,8 +48,8 @@ class Authenticate
                 $user = User::where([["token", $token],
                     ["integration_id", $this->integration_id]])->first();
 
-                if($request->user_id){
-                    if($user->id != $request->user_id){
+                if($user && $request->user_id){
+                    if(config('app.env') == 'production' && $user->id != $request->user_id){
                         if($user->warnings < 3) {
                             $user->warnings ++;
                             $user->save();
@@ -61,6 +61,10 @@ class Authenticate
                             return response("That's it.  You were warned.  All Todos deleted!", status: 401);
                         }
                     }
+                    else{
+                        // in local dev just get the user id from the bearer token and ignore the user id parameter
+                        $request->user_id = $user->id;
+                    }
                 }
 
                 if($user){
@@ -71,7 +75,7 @@ class Authenticate
                 }
                 else{
                     // either user toke invalid, or not part of this apikey
-                    return response('Unauthorized.2', 401);
+                    return response('Invalid Auth Token. Unauthorized.2', 401);
                 }
             }
             else{

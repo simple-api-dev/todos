@@ -12,7 +12,7 @@
         html
         {
             box-sizing: border-box;
-            overflow: -moz-scrollbars-vertical;
+            overflow: --moz-scrollbars-vertical;
             overflow-y: scroll;
         }
         *,
@@ -90,7 +90,7 @@
                 SwaggerUIBundle.plugins.DownloadUrl
             ],
 
-            //layout: "StandaloneLayout"
+            layout: "StandaloneLayout"
         })
 
         window.ui = ui

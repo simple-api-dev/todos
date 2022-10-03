@@ -53,12 +53,22 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof ValidationException) {
+            $errors = [];
+            foreach($exception->errors() as $error){
+                $errors[] = $error[0];
+            }
+            return response()->json([
+                'message' => implode("  ", $errors)
+            ], 422);
+        }
+
         if ($this->isHttpException($exception)) {
             if ($exception->getStatusCode() == 404) {
                 return response()->json( ["message"=>"Not a valid api route - not found."], 404);
             }
             if($exception->getStatusCode() == 405) {
-                return response()->json( ["message"=>$request->getMethod() . " is not configured for this route."], 405);
+                return response()->json( ["message"=>$request->getMethod() . " is not configured for this route.[343]"], 405);
             }
             if($exception->getStatusCode() == 500) {
                 return response()->json( ["message"=>"Server error.  Please file a bug."], 500);

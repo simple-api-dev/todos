@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use OpenApi\Annotations as OA;
@@ -37,21 +38,27 @@ class Controller extends BaseController
     public function __construct(Request $request)
     {
         $this->integration_id = app()->has('integration_id') ? app()->get('integration_id') : "";
+        $this->integration_email = app()->has('integration_email') ? app()->get('integration_email') :"";
         $this->secure_mode = app()->has('secure_mode') ? app()->get('secure_mode') : false;
         $this->current_user = app()->has('current_user') ? app()->get('current_user') : null;
         $this->app_name = $this->secure_mode ? "secure." . config("app.name") : config("app.name");
         $this->is_admin = app()->has('is_admin') ? app()->get('is_admin') : false;
 
-        $analytics = new Analytics(true);
-        $analytics
-            ->setProtocolVersion('1')
-            ->setHitType("transaction")
-            ->setTrackingId(env('GOOGLE_ANALYTICS') )
-            ->setClientId($this->integration_id ?? 'new')
-            ->setDocumentPath($request->path())
-            ->setDocumentTitle($request->path());
+        try {
+            $analytics = new Analytics(true);
+            $analytics
+                ->setProtocolVersion('1')
+                ->setHitType("pageview")
+                ->setTrackingId(env('GOOGLE_ANALYTICS'))
+                ->setClientId($this->integration_id ?? 'new')
+                ->setDocumentPath($request->path())
+                ->setDocumentTitle($request->path());
 
-        $analytics->sendPageview();
+            $analytics->sendPageview();
+        }
+        catch (Exception $ex){
+            error_log($ex->getMessage());
+        }
     }
 
 }

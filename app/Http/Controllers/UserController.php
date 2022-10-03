@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Integration;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,7 +30,7 @@ class UserController extends Controller
      *    @OA\JsonContent(
      *       required={"email", "password"},
      *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
-     *       @OA\Property(property="passord", type="string", format="password", example="password"),
+     *       @OA\Property(property="password", type="string", format="password", example="password"),
      *    ),
      * ),
      * @OA\Response(
@@ -137,7 +136,7 @@ class UserController extends Controller
      *       required={"email", "name", "password"},
      *     @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
      *     @OA\Property(property="name", type="string"),
-     *     @OA\Property(property="passord", type="string", format="password", example="password"),
+     *     @OA\Property(property="password", type="string", format="password", example="password"),
      *    ),
      * ),
      * @OA\Response(
@@ -162,8 +161,8 @@ class UserController extends Controller
         }
 
         $this->validate($request, [
-            'name' => 'required|string',
-            'email' => 'required|email',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'password' => 'required|min:8|max:12'
         ]);
 
@@ -193,8 +192,10 @@ class UserController extends Controller
         ]);
 
         //check to see if email matches the dev's email in the api key integrations
-        $integration = Integration::find($this->integration_id);
-        if($integration->email == $user->email){
+        //$integration = Integration::find($this->integration_id);
+        error_log($this->integration_email);
+        error_log($user->email);
+        if($this->integration_email == $user->email){
             $user->admin = true;
         }
         else{

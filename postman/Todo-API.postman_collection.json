@@ -1,0 +1,1110 @@
+{
+	"info": {
+		"_postman_id": "a6e1189e-b9c3-4754-8a0f-4791f64780fe",
+		"name": "Todo-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "79825"
+	},
+	"item": [
+		{
+			"name": "Basic - ApiKey Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code == 200){",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"apikey\", jsonData.apikey);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{admin_email}}\",\r\n    \"product_url\": \"https://todos.simpleapi.dev\",\r\n    \"captcha\": \"boat2121\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{integration_site}}/api/keys/register",
+					"host": [
+						"{{integration_site}}"
+					],
+					"path": [
+						"api",
+						"keys",
+						"register"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "c2fb96a7-ee58-4447-9307-63eb69a2dd26",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic - ApiKey Deregister no Code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code == 201){",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"code\", jsonData.code);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{admin_email}}\",\r\n    \"captcha\": \"boat2121\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{integration_site}}/api/keys/deregister",
+					"host": [
+						"{{integration_site}}"
+					],
+					"path": [
+						"api",
+						"keys",
+						"deregister"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "c2fb96a7-ee58-4447-9307-63eb69a2dd26",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic - ApiKey Deregister /w Code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{admin_email}}\",\r\n    \"captcha\": \"boat2121\",\r\n    \"code\": \"{{code}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{integration_site}}/api/keys/deregister",
+					"host": [
+						"{{integration_site}}"
+					],
+					"path": [
+						"api",
+						"keys",
+						"deregister"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "c2fb96a7-ee58-4447-9307-63eb69a2dd26",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic - ApiKey Forgot",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{admin_email}}\",\r\n    \"product_url\": \"https://todos.simpleapi.dev\",\r\n    \"captcha\": \"boat2121\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{integration_site}}/api/keys/forgot",
+					"host": [
+						"{{integration_site}}"
+					],
+					"path": [
+						"api",
+						"keys",
+						"forgot"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "c2fb96a7-ee58-4447-9307-63eb69a2dd26",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Plain - Create Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code == 200){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"todo_id\", jsonData.id);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"Buy Milk\",\r\n    \"completed\": false,\r\n    \"meta\": \r\n        {\r\n            \"assigned_to\": \"bob\",\r\n            \"priority\": \"low\",\r\n            \"notes\": \"really need to get this completed\"\r\n        }    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{site}}/api/todos?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Plain - Get Todo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/todos/{{todo_id}}?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"todos",
+						"{{todo_id}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Plain - Update Todo",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"Buy Milk Again and Again\",\r\n    \"completed\": true,\r\n    \"meta\": [\r\n        {\"name\": \"bob\"},\r\n        {\"name\": \"emily\"}]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{site}}/api/todos/{{todo_id}}?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"todos",
+						"{{todo_id}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Plain - List Todos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/todos?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Plain - Delete Todo",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/todos/{{todo_id}}?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"todos",
+						"{{todo_id}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Plain - Delete All",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/todos?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Plain - Delete All Completed",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/todos?apikey={{apikey}}&completed=true",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						},
+						{
+							"key": "completed",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Register Regular User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"John Smith\",\r\n    \"email\": \"joe@smith.com\",\r\n    \"password\": \"pass1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{site}}/api/users/register?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"register"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Regular User Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code == 200){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"bearer_token\", jsonData.token);\r",
+							"    pm.environment.set(\"user_id\", jsonData.id);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"joe@smith.com\",\r\n    \"password\": \"pass1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{site}}/api/users/login?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"login"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Create Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code == 200){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"todo_id\", jsonData.id);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"Buy Milk as user\",\r\n    \"completed\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{site}}/api/users/{{user_id}}/todos?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{user_id}}",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Get Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code == 201){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"todo_id\", jsonData.id);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/users/{{user_id}}/todos/{{todo_id}}?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{user_id}}",
+						"todos",
+						"{{todo_id}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Update Todo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"Buy Milk Again and Again\",\r\n    \"completed\": false,\r\n    \"meta\": {\"action\": \"completed\"}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{site}}/api/users/{{user_id}}/todos/{{todo_id}}?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{user_id}}",
+						"todos",
+						"{{todo_id}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - List My Todos",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/users/{{user_id}}/todos?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{user_id}}",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Delete Todo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/users/{{user_id}}/todos/{{todo_id}}?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{user_id}}",
+						"todos",
+						"{{todo_id}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Delete All Mine",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/users/{{user_id}}/todos?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{user_id}}",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Delete Oneself",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/users/{{user_id}}?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{user_id}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - User Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code == 200){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"bearer_token\", '');\r",
+							"    pm.environment.set(\"user_id\",'');\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{site}}/api/users/logout?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"logout"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Register Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Admin Email\",\r\n    \"email\": \"{{admin_email}}\",\r\n    \"password\": \"pass1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{site}}/api/users/register?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"register"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure -Admin Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code == 200){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"bearer_token\", jsonData.token);\r",
+							"    pm.environment.set(\"user_id\", jsonData.id);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{admin_email}}\",\r\n    \"password\": \"pass1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{site}}/api/users/login?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"login"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Admin List All Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/users?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Delete User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/users/31?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"31"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Secure - Admin Delete All Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/users?apikey={{apikey}}",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{apikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test google analytics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{site}}/api/testga?apikey=fef6b64d-2363-4cbc-85bf-c2dcd468500d",
+					"host": [
+						"{{site}}"
+					],
+					"path": [
+						"api",
+						"testga"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "fef6b64d-2363-4cbc-85bf-c2dcd468500d"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

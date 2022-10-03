@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ApiKeyAuthentication;
+use App\Http\Middleware\AppendCookieMiddleware;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\OriginCheckMiddleware;
 use App\Http\Middleware\SecureHttpMiddleware;
@@ -9,8 +10,7 @@ use Laravel\Lumen\Routing\Router;
 /** @var Router $router */
 
 
-
-$router->group(['prefix' => env('app_dir'),'middleware' => [
+$router->group(['prefix' => env('APP_DIR'),'middleware' => [
     ApiKeyAuthentication::class,
     SecureHttpMiddleware::class]
 ], function () use ($router) {
@@ -21,10 +21,11 @@ $router->group(['prefix' => env('app_dir'),'middleware' => [
 });
 
 
-$router->group(['prefix' => env('app_dir'),'middleware' => [
+$router->group(['prefix' => env('APP_DIR'),'middleware' => [
     ApiKeyAuthentication::class,
     SecureHttpMiddleware::class,
-    Authenticate::class]
+    Authenticate::class,
+    AppendCookieMiddleware::class]
     ], function () use ($router) {
         $router->get('users', ['uses' => 'UserController@index']);
 
@@ -58,14 +59,6 @@ $router->group(['prefix' => env('app_dir'),'middleware' => [
 
         $router->post('users/logout', ['uses' => 'UserController@logout']);
 
-});
-
-// This is used to register for a new api key.  That's it.  We will enforce CORS so that
-// only requests from the website will actually work
-$router->group(['prefix' => env('app_dir'), 'middleware' => OriginCheckMiddleware::class], function () use ($router) {
-    $router->post('keys/register', ['uses' => 'IntegrationController@register']);
-    $router->post('keys/forgot', ['uses' => 'IntegrationController@forgot']);
-    $router->post('keys/deregister', ['uses' => 'IntegrationController@deregister']);
 });
 
 $router->get('/', function () use ($router) {
