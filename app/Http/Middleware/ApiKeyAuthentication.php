@@ -23,18 +23,26 @@ class ApiKeyAuthentication
         error_log("handle request");
         if($request->has('apikey')){
             $key = $request->get('apikey');
-
             //Check to see if the integration cookie has been set and if not then call the integration API
-            $payload = json_decode($this->decrypt($request->cookie("integration")));
-            //error_log(print_r($payload,true));
-            $integration_id = $payload->id;
-            $integration_email = $payload->email;
-            $integration_premium = $payload->premium;
-
-            //uncomment for debugging remote API call when cookie has been set:
-            //            $integration_id = null;
-            //            $integration_email = null;
-            //            $integration_premium = false;
+            if($request->hasCookie("integration")) {
+                try {
+                    $payload = json_decode($this->decrypt($request->cookie("integration")));
+                    //error_log(print_r($payload,true));
+                    $integration_id = $payload->id;
+                    $integration_email = $payload->email;
+                    $integration_premium = $payload->premium;
+                }
+                catch (\Exception $exception){
+                    $integration_id = null;
+                    $integration_email = null;
+                    $integration_premium = false;
+                }
+            }
+            else{
+                $integration_id = null;
+                $integration_email = null;
+                $integration_premium = false;
+            }
 
             if(!$integration_id) {
                 try {
