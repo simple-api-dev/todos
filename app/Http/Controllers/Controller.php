@@ -39,6 +39,7 @@ class Controller extends BaseController
     {
         $this->integration_id = app()->has('integration_id') ? app()->get('integration_id') : "";
         $this->integration_email = app()->has('integration_email') ? app()->get('integration_email') :"";
+        $this->integration_premium = app()->has('integration_premium') ? app()->get('integration_premium') : false;
         $this->secure_mode = app()->has('secure_mode') ? app()->get('secure_mode') : false;
         $this->current_user = app()->has('current_user') ? app()->get('current_user') : null;
         $this->app_name = $this->secure_mode ? "secure." . config("app.name") : config("app.name");

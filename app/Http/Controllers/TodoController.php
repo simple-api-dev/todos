@@ -242,13 +242,13 @@ class TodoController extends Controller
         ]);
 
         // Limit the total todos per account
-        if($this->current_user){
+        if($this->current_user && !$this->integration_premium){
             $limit_reached = Todo::where('user_id',$this->current_user->id)->count() > 25;
-            $message = "Maximum number of todos (25) per user has been reached.";
+            $message = "Maximum number of todos (25) per user has been reached. (Basic Acct)";
         }
-        else{
+        elseif (!$this->integration_premium) {
             $limit_reached = Todo::where('integration_id',$this->integration_id)->count() > 100;
-            $message = "Maximum number of todos (100) per developer account has been reached.";
+            $message = "Maximum number of todos (100) per developer account has been reached. (Basic Acct)";
         }
 
         if($limit_reached){
