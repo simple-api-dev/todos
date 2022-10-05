@@ -177,8 +177,8 @@ class UserController extends Controller
         // Limit the total users per account
         $limit_reached = User::where('integration_id',$this->integration_id)->count() > 10;
 
-        if($limit_reached){
-            $message = "Maximum number of user accounts (10) per developer account has been reached.";
+        if($limit_reached && !$this->integration_premium){
+            $message = "Maximum number of user accounts (10) per developer account has been reached. (Basic Acct)";
             return response()->json(['message' => $message], 403);
         }
 
