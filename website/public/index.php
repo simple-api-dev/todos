@@ -31,7 +31,7 @@
                 </p>
                 <div class="mt-8 md:px-32 md:text-center text-left">
                     Create, read, update, and delete todos all from an easy-to-use API.  Includes user account functionality.  Just provide an
-                    email and you should receive your api key in your inbox a few moments later.  Full documentation provided using Swagger and
+                    email, enter the 6 digit code we send you, and your api key is shown right away.  Full documentation provided using Swagger and
                     OpenApi 3.0.  Sign up today!
                 </div>
                 <div class="mt-8 flex justify-center">

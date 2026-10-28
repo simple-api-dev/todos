@@ -15,12 +15,6 @@
             ?>
         >Get API Key</a></li> 
         <span>|</span>
-        <li><a href="/forgot-key.php"
-        <?php 
-                echo ($_SERVER['PHP_SELF'] == "/forgot-key.php") ? 'class="underline"' : "";
-            ?>
-        >Forgot</a></li>
-        <span>|</span>
         <li><a href="/delete-account.php"
             <?php 
                 echo ($_SERVER['PHP_SELF'] == "/delete-account.php") ? 'class="underline"' : "";

@@ -1,301 +1,111 @@
 //*************************************** */
-//Requests a key by submitting an email
+//Getting a key (and deleting an account) is two steps:
+//1. email address + captcha -> a 6 digit code is emailed
+//2. the code -> the key is shown on this page
 //*************************************** */
-function register(api_url)
+var MAIL_FORMAT = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
+
+function keysApi(api_url, path, body)
 {
-    try{
-        let email = document.querySelector("#email").value;
-
-        var mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)$/;
-        if(!email.match(mailformat))
-        {   
-            showToast("Invalid email address!", "error");
-            return false;
-        }
-
-        let cap = grecaptcha.getResponse();
-
-        //captcha is empty if not done
-        if (cap.length < 1) 
-        {
-            showToast("Please fill in the captcha!", "error");
-            return;
-        }
-        
-        //hide the contact form
-        let form = document.querySelector("#contact_form");
-        form.style.display = "none";
-        let responseText = document.createTextNode("Requesting key...");
-        form.parentElement.appendChild(responseText);
-
-        //send Ajax request
-        fetch(api_url + '/api/keys/register', {
-            method: 'POST',
-            body: JSON.stringify({
-                'email' : email,
-                'product_url': "https://todos.simpleapi.dev",
-                'captcha': cap
-            }),
-            headers: {
-                "Content-type": "application/json",
-            }
-        })
-        .then(response =>
-            //retrieve json while keeping status
-            response.json().then(data => ({
-                data: data,
-                status: response.status
-            })
-        )   
-        //gets the response
-        .then(response => {
-            //good response
-            if (response.status == 200)
-            {
-                //display success message
-                responseText.textContent = response.data.message;
-            }    
-            else
-            {
-                showToast(response.data.message, "error");
-
-                //reshow form
-                form.style.display = "grid";
-                responseText.remove();
-                grecaptcha.reset();
-            }            
-        })
-        //catches errors
-        .catch(error =>
-        {
-            showToast(error, "error");
-
-            //reshow form
-            form.style.display = "grid";
-            responseText.remove();
-            grecaptcha.reset();
-        }));
-    }
-    catch(e)
-    {
-        showToast(error, "error");
-
-        //reshow form
-        form.style.display = "grid";
-        responseText.remove();
-        grecaptcha.reset();
-
-        console.log(e);
-    }
-    finally
-    {
-        //don't actually submit form
-        return false;
-    }
+    return fetch(api_url + '/api/keys/' + path, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: { "Content-type": "application/json" }
+    }).then(response => response.json().then(data => ({ data: data, status: response.status })));
 }
 
-//*************************************** */
-//Requests a resend of user's api key
-//*************************************** */
-function forgot(api_url)
+function setStep(step)
 {
-    try{
-        let email = document.querySelector("#email").value;
-
-        var mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)$/;
-        if(!email.match(mailformat))
-        {   
-            showToast("Invalid email address!", "error");
-            return false;
-        }
-
-        let cap = grecaptcha.getResponse();
-
-        //captcha is empty if not done
-        if (cap.length < 1) 
-        {
-            showToast("Please fill in the captcha!", "error");
-            return;
-        }
-        
-        //hide the contact form
-        let form = document.querySelector("#contact_form");
-        form.style.display = "none";
-        let responseText = document.createTextNode("Requesting key...");
-        form.parentElement.appendChild(responseText);
-
-        //send Ajax request
-        fetch(api_url + '/api/keys/forgot', {
-            method: 'POST',
-            body: JSON.stringify({
-                'email' : email,
-                'captcha': cap
-            }),
-            headers: {
-                "Content-type": "application/json",
-            }
-        })
-        .then(response =>
-            //retrieve json while keeping status
-            response.json().then(data => ({
-                data: data,
-                status: response.status
-            })
-        )   
-        //gets the response
-        .then(response => {
-            //good response
-            if (response.status == 200)
-            {
-                //display success message
-                responseText.textContent = response.data.message;
-            }    
-            else
-            {
-                showToast(response.data.message, "error");
-
-                //reshow form
-                form.style.display = "grid";
-                responseText.remove();
-                grecaptcha.reset();
-            }            
-        })
-        //catches errors
-        .catch(error =>
-        {
-            showToast(error, "error");
-
-            //reshow form
-            form.style.display = "grid";
-            responseText.remove();
-            grecaptcha.reset();
-        }));
-    }
-    catch(e)
+    ['step1', 'step2', 'step3'].forEach(function(id)
     {
-        showToast(error, "error");
-
-        //reshow form
-        form.style.display = "grid";
-        responseText.remove();
-        grecaptcha.reset();
-
-        console.log(e);
-    }
-    finally
-    {
-        //don't actually submit form
-        return false;
-    }
+        let el = document.querySelector('#' + id);
+        if (el) { el.style.display = (id == step) ? (id == 'step3' ? 'block' : 'grid') : 'none'; }
+    });
 }
 
-//*************************************** */
-//Requests account deletion
-//*************************************** */
-function deregister(api_url)
+//step 1: ask for a code. purpose is 'request' (get a key) or 'delete-request' (delete the account)
+function requestCode(api_url, purpose)
 {
-    try{
-        let email = document.querySelector("#email").value;
+    let email = document.querySelector("#email").value.trim();
+    if (!email.match(MAIL_FORMAT)) { showToast("Invalid email address!", "error"); return false; }
 
-        var mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)$/;
-        if(!email.match(mailformat))
-        {   
-            showToast("Invalid email address!", "error");
-            return false;
-        }
+    let cap = grecaptcha.getResponse();
+    if (cap.length < 1) { showToast("Please fill in the captcha!", "error"); return false; }
 
-        let code = document.querySelector('#code').value;
-        let cap = grecaptcha.getResponse();
-
-        //captcha is empty if not done
-        if (cap.length < 1) 
+    let button = document.querySelector("#Submit1");
+    button.disabled = true;
+    keysApi(api_url, purpose, { 'email': email, 'product_url': window.PRODUCT_URL, 'captcha': cap })
+        .then(function(response)
         {
-            showToast("Please fill in the captcha!", "error");
-            return;
-        }
-        
-        //hide the contact form
-        let form = document.querySelector("#contact_form");
-        form.style.display = "none";
-        let responseText = document.createTextNode("Requesting account deletion...");
-        form.parentElement.appendChild(responseText);
-
-        //build body here to allow code vs no code
-        let ajaxBody = {};
-        ajaxBody['email'] = email;
-        if (code) ajaxBody['code'] = code;
-        ajaxBody['captcha'] = cap;
-
-        //send Ajax request
-        fetch(api_url + '/api/keys/deregister', {
-            method: 'POST',
-            body: JSON.stringify(ajaxBody),
-            headers: {
-                "Content-type": "application/json",
-            }
-        })
-        .then(response =>
-            //retrieve json while keeping status
-            response.json().then(data => ({
-                data: data,
-                status: response.status
-            })
-        )   
-        //gets the response
-        .then(response => {
-            //good response
+            button.disabled = false;
             if (response.status == 200)
             {
-                //display success message
-                responseText.textContent = response.data.message;
-            }   
-            //info response regarding deletion code 
-            else if (response.status == 201)
-            {
-                showToast(response.data.message, "info");
-
-                //reshow form
-                form.style.display = "grid";
-                responseText.remove();
-                grecaptcha.reset();
-            }   
+                document.querySelector("#sent_to").textContent = email;
+                setStep('step2');
+                document.querySelector("#code").focus();
+                showToast(response.data.message, "success");
+            }
             else
             {
                 showToast(response.data.message, "error");
-
-                //reshow form
-                form.style.display = "grid";
-                responseText.remove();
                 grecaptcha.reset();
-            }            
+            }
         })
-        //catches errors
-        .catch(error =>
+        .catch(function(error) { button.disabled = false; showToast("Something went wrong, please try again.", "error"); grecaptcha.reset(); });
+
+    return false;
+}
+
+//step 2: enter the code. purpose is 'verify' (shows the key) or 'delete' (deletes the account)
+function submitCode(api_url, purpose)
+{
+    let email = document.querySelector("#email").value.trim();
+    let code = document.querySelector("#code").value.trim();
+    if (!code.match(/^[0-9]{6}$/)) { showToast("The code is 6 digits.", "error"); return false; }
+
+    let button = document.querySelector("#Submit2");
+    button.disabled = true;
+    keysApi(api_url, purpose, { 'email': email, 'product_url': window.PRODUCT_URL, 'code': code })
+        .then(function(response)
         {
-            showToast(error, "error");
+            button.disabled = false;
+            if (response.status == 200)
+            {
+                if (purpose == 'verify')
+                {
+                    document.querySelector("#apikey").textContent = response.data.apikey;
+                    document.querySelector("#key_note").textContent = response.data.created ? "Your key is ready." : "You already had a key, here it is again.";
+                    setStep('step3');
+                }
+                else
+                {
+                    document.querySelector("#done").textContent = response.data.message;
+                    setStep('step3');
+                }
+            }
+            else
+            {
+                showToast(response.data.message, "error");
+            }
+        })
+        .catch(function(error) { button.disabled = false; showToast("Something went wrong, please try again.", "error"); });
 
-            //reshow form
-            form.style.display = "grid";
-            responseText.remove();
-            grecaptcha.reset();
-        }));
-    }
-    catch(e)
-    {
-        showToast(error, "error");
+    return false;
+}
 
-        //reshow form
-        form.style.display = "grid";
-        responseText.remove();
-        grecaptcha.reset();
+function startOver()
+{
+    document.querySelector("#code").value = "";
+    grecaptcha.reset();
+    setStep('step1');
+    return false;
+}
 
-        console.log(e);
-    }
-    finally
-    {
-        //don't actually submit form
-        return false;
-    }
+function copyKey()
+{
+    let key = document.querySelector("#apikey").textContent;
+    if (navigator.clipboard) { navigator.clipboard.writeText(key).then(function() { showToast("Copied!", "success"); }); }
+    return false;
 }
 
 //*************************************** */
