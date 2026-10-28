@@ -19,7 +19,7 @@
             <?php 
                 echo ($_SERVER['PHP_SELF'] == "/delete-account.php") ? 'class="underline"' : "";
             ?>
-        >Unregister</a></li>
+        >Manage keys</a></li>
         <span>|</span>
         <li><a href="/docs.php"
                 <?php
