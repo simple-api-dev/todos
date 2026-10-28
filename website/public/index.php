@@ -132,10 +132,9 @@ POST https://keys.simpleapi.dev/api/keys/auth-url
                 </div>
                 <div class="mt-4">
                     <h3>Admin User Account</h3>
-                    <p>The user whose email matches the email used to register the apikey becomes an admin user, with elevated rights,
-                    once they prove they own that address: register, then call <code>users/forgot</code> and <code>users/reset</code>
-                    with the emailed code, and log in again. Admin rights include listing users and deleting one or all users.
-                    A normal registration returns "admin": false; after the reset, logging in returns "admin": true:</p>
+                    <p>Registering with the email used to register the apikey makes the admin account. That one answers <code>202</code> and emails a 6 digit code; send it with the email to
+                    <code>users/register/confirm</code> and the account is created as an admin and logged in. Admin rights include listing users and deleting one or all users.
+                    A normal registration returns "admin": false; the confirmed developer account returns "admin": true:</p>
 <pre>
 {
     "name": "Happy Dev",
@@ -146,7 +145,7 @@ POST https://keys.simpleapi.dev/api/keys/auth-url
     "id": 2
 }</pre>
                     <p>Admin users can include the query parameter <pre>?admin=true</pre> when calling the delete all users method that will
-                        also remove their account and log them out.  Reset the password again to become an admin again.</p>
+                        also remove their account and log them out.  Register and confirm again to become an admin again.</p>
                 </div>
                 <div class="mt-4">
                     <h3>Bugs, Issues, Requests, Feedback</h3>

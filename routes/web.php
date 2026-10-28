@@ -19,6 +19,7 @@ $router->group(['prefix' => env('APP_DIR'),'middleware' => [
     // these are the only 2 calls that would have secure true but don't require bearer_token
     $router->post('users/login', ['uses' => 'UserController@login']);
     $router->post('users/register', ['uses' => 'UserController@register']);
+    $router->post('users/register/confirm', ['uses' => 'UserController@confirmRegistration']);
     $router->post('users/forgot', ['uses' => 'UserController@forgot']);
     $router->post('users/reset', ['uses' => 'UserController@reset']);
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\AdminRegistration;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+    use AdminRegistration;
+
     /**
      * @OA\Post(
      * path="/api/users/login",
@@ -184,6 +187,11 @@ class UserController extends Controller
             return response()->json(['message' => $message], 403);
         }
 
+        // the developer's own address becomes the admin, so it has to be confirmed with an emailed code first
+        if($this->isDeveloperEmail($request->email)){
+            return $this->startAdminRegistration($request);
+        }
+
         $user = User::make([
             "name" => $request->name,
             "email" => $request->email,
@@ -197,6 +205,67 @@ class UserController extends Controller
         $user->admin = false;
 
         $user->save();
+        return response()->json($user);
+    }
+
+    /**
+     * @OA\Post(
+     * path="/api/users/register/confirm",
+     * summary="Finish registering the developer's own email address with the emailed code",
+     * description="Registering with the email address your apikey belongs to answers `202` and emails a 6 digit code to it (valid 15 minutes, 5 attempts). Nothing is created until you send the code here; the account is then created as the admin and logged in, exactly like `/api/users/register`.",
+     * operationId="UserController.RegisterConfirm",
+     * tags={"Users"},
+     * @OA\Parameter(name="apikey", in="query", required=true, @OA\Schema(type="string")),
+     * @OA\RequestBody(
+     *    required=true,
+     *    @OA\JsonContent(
+     *       required={"email","code"},
+     *       @OA\Property(property="email", type="string", format="email"),
+     *       @OA\Property(property="code", type="string", example="482915"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Admin account created and logged in",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="id", type="integer"),
+     *       @OA\Property(property="name", type="string"),
+     *       @OA\Property(property="email", type="string"),
+     *       @OA\Property(property="admin", type="boolean", example=true),
+     *       @OA\Property(property="token", type="string", example="fef6b64d-2223-4dec-83bf-c2dcd468500d"),
+     *    )
+     * ),
+     * @OA\Response(response=400, description="Invalid or expired code", @OA\JsonContent(@OA\Property(property="message", type="string"))),
+     * @OA\Response(response=422, description="Validation failed", @OA\JsonContent(@OA\Property(property="message", type="string"))),
+     * )
+     */
+    public function confirmRegistration(Request $request) : JsonResponse{
+
+        $this->validate($request, [
+            'email' => 'required|email|max:255',
+            'code' => 'required|digits:6'
+        ]);
+
+        $pending = $this->isDeveloperEmail($request->email) ? $this->takePendingRegistration($request->email, $request->code) : null;
+        if(!$pending){
+            return response()->json(['message' => "Invalid or expired code."], 400);
+        }
+
+        if(User::where([["email", $pending->email], ["integration_id", $this->integration_id]])->exists()){
+            return response()->json(['message' => "User registration failed, email already registered to this developer account."], 400);
+        }
+
+        $user = User::make([
+            "name" => $pending->name,
+            "email" => $pending->email,
+            "password" => $pending->password_hash,
+            "integration_id" => $this->integration_id,
+            "enabled" => true,
+            "token" => User::v4()
+        ]);
+        $user->admin = true;
+        $user->save();
+
         return response()->json($user);
     }
 
