@@ -61,6 +61,7 @@ class ApiKeyAuthentication
         app()->instance('integration_id', $integration["integration_id"]);
         app()->instance('integration_email', $integration["integration_email"]);
         app()->instance('integration_premium', $integration["integration_premium"] ?? false);
+        app()->instance('integration_auth_url', $integration["integration_auth_url"] ?? null);
 
         return $next($request);
     }

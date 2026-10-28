@@ -1,0 +1,935 @@
+{
+  "info": {
+    "_postman_id": "1b0f6733-3cf6-54a1-ab18-08eed63cca2a",
+    "name": "Todos API",
+    "description": "This is an open and free to use API for developers to test their client projects.\n        All api calls require you to pass in  your API Key with the querystring\n        ?apikey=########-####-####-####-############, Please\n        register for your own API Key today at https://todoapi.net/register\n        Optional: use your own auth service. By default this API has its own users. If you already have an auth service, or you use the SimpleAPI Auth API (auth.simpleapi.dev), point your key at it with POST https://keys.simpleapi.dev/api/keys/auth-url. The user calls (/users/...) then accept that service's tokens, and register, login, logout and password reset here answer 409.\n\nImport the matching environment, set `apikey` to your key from https://keys.simpleapi.dev, then run the requests top to bottom. Register and login save the session token into the environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Generic Todo",
+      "item": [
+        {
+          "name": "Retrieve all todos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Retrieve all todos",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create a new Todo.  There's a limit of 100 generic todos per developer account.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Create a new Todo.  There's a limit of 100 generic todos per developer account.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Retrieve specific todo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{id}}?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{id}}"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Retrieve specific todo",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create a new Todo",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{id}}?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos",
+                "{{id}}"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Create a new Todo",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Deletes the todo.",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/todo/{{id}}?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todo",
+                "{{id}}"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Deletes the todo.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Deletes all Todos",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "todos"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                },
+                {
+                  "key": "completed",
+                  "value": "",
+                  "disabled": true,
+                  "description": "?completed=true if you want to delete only completed"
+                }
+              ]
+            },
+            "description": "Deletes all Todos",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User Todo",
+      "item": [
+        {
+          "name": "Retrieve all todos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{user_id}}/todos?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}",
+                "todos"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Retrieve all todos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create a new Todo for current user.  There's a limit of 25 todos per user .",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{user_id}}/todos?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}",
+                "todos"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Create a new Todo for current user.  There's a limit of 25 todos per user .",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Retrieve specific todo for current user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{user_id}}/todos/{{id}}?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}",
+                "todos",
+                "{{id}}"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Retrieve specific todo for current user"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create a new Todo for the current user",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{user_id}}/todos/{{id}}?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}",
+                "todos",
+                "{{id}}"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Create a new Todo for the current user",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Deletes the todo, must belong to current user.",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{user_id}}/todo/{{id}}?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}",
+                "todo",
+                "{{id}}"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Deletes the todo, must belong to current user."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Deletes all Todos for the current user.",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{user_id}}/todos/?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}",
+                "todos"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                },
+                {
+                  "key": "completed",
+                  "value": "",
+                  "disabled": true,
+                  "description": "?completed=true if you want to delete only completed"
+                }
+              ]
+            },
+            "description": "Deletes all Todos for the current user."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "User login ",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/login?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "User login ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user1@mail.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var j = pm.response.json();",
+                  "if (j.token) { pm.environment.set(\"token\", j.token); }",
+                  "var u = j.user || j; if (u && u.id) { pm.environment.set(\"user_id\", u.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "User logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/logout?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "logout"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "User logout"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "User registration. There's a max limit of 10 users per developer account.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/register?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "register"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "User registration. There's a max limit of 10 users per developer account.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user1@mail.com\",\n  \"name\": \"string\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var j = pm.response.json();",
+                  "if (j.token) { pm.environment.set(\"token\", j.token); }",
+                  "var u = j.user || j; if (u && u.id) { pm.environment.set(\"user_id\", u.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Deletes the current user, or a specific user if current user is admin",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{id}}?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{id}}"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Deletes the current user, or a specific user if current user is admin"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Lists all users, if the current user has admin rights.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Lists all users, if the current user has admin rights."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Deletes all users, current user must have admin rights.",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                },
+                {
+                  "key": "admin",
+                  "value": "",
+                  "disabled": true,
+                  "description": "?admin=true if you want to also delete the admin account (not developer account)"
+                }
+              ]
+            },
+            "description": "Deletes all users, current user must have admin rights."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Email a password reset code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/forgot?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "forgot"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "Always answers with the same message, whether or not the email has an account. The code is 6 digits, valid for 15 minutes and works once. One request per minute per account, and 20 per day per developer key.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user1@mail.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Set a new password using the emailed code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/reset?apikey={{apikey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "reset"
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "{{apikey}}"
+                }
+              ]
+            },
+            "description": "The code works once, expires after 15 minutes and is locked after 5 wrong attempts. A successful reset signs the user out everywhere; log in again with the new password.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user1@mail.com\",\n  \"code\": \"123456\",\n  \"password\": \"new-password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

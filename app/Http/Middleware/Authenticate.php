@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\User;
+use App\Services\ExternalAuth;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Http\Request;
@@ -45,8 +46,21 @@ class Authenticate
             if(str_contains($request->header('Authorization'),"Bearer ")){
                 $token = explode(" ", $request->header('Authorization'))[1];
 
-                $user = User::where([["token", $token],
-                    ["integration_id", $this->integration_id]])->first();
+                $auth_url = app()->has('integration_auth_url') ? app()->get('integration_auth_url') : null;
+                if ($auth_url) {
+                    // this key takes its users from an external auth service (see ExternalAuth)
+                    $result = $token !== '' && strlen($token) <= 4096
+                        ? ExternalAuth::verify($auth_url, $token, $this->integration_id) : ['status' => 'invalid'];
+                    if ($result['status'] === 'unavailable') {
+                        return response('The auth service for this apikey is unavailable.  Please try again shortly.', 503);
+                    }
+                    $user = $result['status'] === 'ok'
+                        ? ExternalAuth::localUser($result['user'], $this->integration_id, app()->has('integration_email') ? app()->get('integration_email') : '')
+                        : null;
+                } else {
+                    $user = User::where([["token", $token],
+                        ["integration_id", $this->integration_id]])->first();
+                }
 
                 if($user && $request->user_id){
                     if(config('app.env') == 'production' && $user->id != $request->user_id){

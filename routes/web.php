@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\ApiKeyAuthentication;
 use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\LocalUsersOnly;
 use App\Http\Middleware\OriginCheckMiddleware;
 use App\Http\Middleware\SecureHttpMiddleware;
 use Laravel\Lumen\Routing\Router;
@@ -11,7 +12,8 @@ use Laravel\Lumen\Routing\Router;
 
 $router->group(['prefix' => env('APP_DIR'),'middleware' => [
     ApiKeyAuthentication::class,
-    SecureHttpMiddleware::class]
+    SecureHttpMiddleware::class,
+    LocalUsersOnly::class]
 ], function () use ($router) {
 
     // these are the only 2 calls that would have secure true but don't require bearer_token
@@ -57,8 +59,16 @@ $router->group(['prefix' => env('APP_DIR'),'middleware' => [
 
         $router->put('users/{user_id}/todos/{id}', ['uses' => 'TodoController@put']);
 
-        $router->post('users/logout', ['uses' => 'UserController@logout']);
+});
 
+// Logging out belongs to the api's own users; a key with an external auth service logs out there
+$router->group(['prefix' => env('APP_DIR'),'middleware' => [
+    ApiKeyAuthentication::class,
+    SecureHttpMiddleware::class,
+    LocalUsersOnly::class,
+    Authenticate::class]
+    ], function () use ($router) {
+        $router->post('users/logout', ['uses' => 'UserController@logout']);
 });
 
 $router->get('/', function () use ($router) {

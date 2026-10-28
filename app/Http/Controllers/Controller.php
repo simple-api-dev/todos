@@ -18,7 +18,8 @@ class Controller extends BaseController
      *   description="This is an open and free to use API for developers to test their client projects.
         All api calls require you to pass in <br> your API Key with the querystring
         <b>?apikey=########-####-####-####-############</b>, <br><br>Please
-        register for your own API Key today at https://todoapi.net/register ",
+        register for your own API Key today at https://todoapi.net/register
+        <br><br><b>Optional: use your own auth service.</b> By default this API has its own users. If you already have an auth service, or you use the SimpleAPI Auth API (<a href='https://auth.simpleapi.dev'>auth.simpleapi.dev</a>), point your key at it with <b>POST https://keys.simpleapi.dev/api/keys/auth-url</b>. The user calls (/users/...) then accept that service's tokens, and register, login, logout and password reset here answer 409.",
      *
      * )
      * @OA\SecurityScheme(
