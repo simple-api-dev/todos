@@ -1,0 +1,127 @@
+/*Fonts*/
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@200;300;400;600;900&display=swap');
+
+/**************/
+/*Tailwind*/
+/**************/
+@tailwind base;
+@tailwind components;
+@tailwind utilities; 
+
+
+h1 {
+    @apply leading-9 font-bold tracking-tight text-theme-green sm:leading-10;
+}
+
+/* Note SwaggerUI.css makes 'title' */
+.title1{
+  @apply text-3xl sm:text-4xl;
+}
+
+.title2{
+  @apply text-2xl sm:text-3xl;
+}
+
+h2,h3 {
+    @apply text-xl;
+    @apply text-theme-green;
+}
+
+nav a {
+    @apply text-theme-green-light;
+}
+nav a:hover, footer a:hover{
+    @apply underline;  
+} 
+
+.index pre {
+  background-color: #dddddd;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  @apply overflow-x-scroll;
+  @apply md:overflow-x-hidden;
+}
+
+input {
+  background-color: #eeeeee;
+  padding: 10px!important;
+}
+
+.btn{
+  font-size: 1.3em;
+  @apply bg-theme-green-btn;
+  @apply text-white;
+  box-shadow: 3px 3px 3px #000000;
+  @apply font-bold;
+  @apply rounded-md;
+  @apply py-2 px-6;
+  @apply cursor-pointer;
+}
+
+.btn:hover{
+    @apply bg-opacity-75;
+}
+
+.link{
+  color: darkblue;
+  @apply underline;
+}
+
+/**************************/
+/* fade out animation     */
+/**************************/
+.fade-out {
+  animation: fadeOut ease 2s;
+  -webkit-animation: fadeOut ease 2s;
+  -moz-animation: fadeOut ease 2s;
+  -o-animation: fadeOut ease 2s;
+  -ms-animation: fadeOut ease 2s;
+}
+@keyframes fadeOut {
+  0% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
+  }
+}
+
+@-moz-keyframes fadeOut {
+  0% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
+  }
+}
+
+@-webkit-keyframes fadeOut {
+  0% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
+  }
+}
+
+@-o-keyframes fadeOut {
+  0% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
+  }
+}
+  
+@-ms-keyframes fadeOut {
+  0% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
+  }
+}
+/**************************/
+/* end fade out animation */
+/**************************/
