@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         app(RateLimiter::class)->for('global', function () {
-            return Limit::perMinute(20)->by(request()->ip());
+            return Limit::perMinute((int) env('THROTTLE_PER_MINUTE', 20))->by(request()->ip());
         });
     }
 }

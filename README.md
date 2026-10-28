@@ -15,6 +15,11 @@ that take into account things like user authentication.*
 - MySQL database
 - Google Analytics
 
+#### Password reset
+- `POST /api/users/forgot` with `{"email"}` emails a 6 digit code (always answers the same message, whether or not the account exists)
+- `POST /api/users/reset` with `{"email","code","password"}` sets a new password and signs the user out everywhere
+- the code works once, expires after 15 minutes and is locked after 5 wrong attempts; one request per minute per account, 20 per day per developer key
+
 #### Documentation
 - [Register for APIKey](https://todos.simpleapi.dev)
 - [Review Swagger Docs](https://todos.simpleapi.dev/docs)

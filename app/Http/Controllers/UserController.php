@@ -7,6 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 
 class UserController extends Controller
@@ -163,7 +165,7 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'password' => 'required|min:8|max:12'
+            'password' => 'required|min:8|max:72'
         ]);
 
         $email_exists_for_this_integration =
@@ -353,5 +355,141 @@ class UserController extends Controller
         $query = User::where("integration_id", $this->integration_id)->get();
 
         return response()->json($query);
+    }
+
+    private const RESET_MINUTES = 15;
+    private const RESET_MAX_ATTEMPTS = 5;
+    private const RESET_COOLDOWN_SECONDS = 60;
+    private const RESET_DAILY_LIMIT = 20;
+
+    /**
+     * @OA\Post(
+     * path="/api/users/forgot",
+     * summary="Email a password reset code",
+     * description="Always answers with the same message, whether or not the email has an account. The code is 6 digits, valid for 15 minutes and works once. One request per minute per account, and 20 per day per developer key.",
+     * operationId="UserController.Forgot",
+     * tags={"Users"},
+     * @OA\Parameter(name="apikey", in="query", required=true, @OA\Schema(type="string")),
+     * @OA\RequestBody(
+     *    required=true,
+     *    @OA\JsonContent(
+     *       required={"email"},
+     *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Request accepted",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="If an account exists for that email, a reset code has been sent.")
+     *    )
+     * ),
+     * @OA\Response(response=429, description="Daily reset limit for this developer key reached")
+     * )
+     */
+    public function forgot(Request $request) : JsonResponse{
+
+        $this->validate($request, [
+            'email' => 'required|email|max:255'
+        ]);
+
+        $generic = ['message' => "If an account exists for that email, a reset code has been sent."];
+
+        // limit how many reset emails one developer key can trigger per day (emails are not verified at signup)
+        $sent_today = User::where("integration_id", $this->integration_id)
+            ->where("reset_sent_at", ">", Carbon::now()->subDay())->count();
+        if($sent_today >= self::RESET_DAILY_LIMIT){
+            return response()->json(['message' => "Password reset limit reached for this developer account today, please try again tomorrow."], 429);
+        }
+
+        $user = User::where([["email", $request->email], ["integration_id", $this->integration_id]])->first();
+
+        if($user && $user->enabled
+            && (!$user->reset_sent_at || $user->reset_sent_at->diffInSeconds(Carbon::now()) >= self::RESET_COOLDOWN_SECONDS)){
+
+            $code = str_pad((string)random_int(0, 999999), 6, "0", STR_PAD_LEFT);
+            $user->reset_code_hash = Hash::make($code);
+            $user->reset_expires_at = Carbon::now()->addMinutes(self::RESET_MINUTES);
+            $user->reset_attempts = 0;
+            $user->reset_sent_at = Carbon::now();
+            $user->save();
+
+            try {
+                Mail::send('reset', [
+                    "name" => $user->name,
+                    "code" => $code,
+                    "minutes" => self::RESET_MINUTES
+                ], function ($message) use ($user) {
+                    $message->to($user->email, $user->name)->subject('Your password reset code');
+                });
+            }
+            catch (\Exception $ex) {
+                // do not reveal whether the account exists or whether mail failed
+                error_log("password reset mail failed: " . $ex->getMessage());
+            }
+        }
+
+        return response()->json($generic);
+    }
+
+    /**
+     * @OA\Post(
+     * path="/api/users/reset",
+     * summary="Set a new password using the emailed code",
+     * description="The code works once, expires after 15 minutes and is locked after 5 wrong attempts. A successful reset signs the user out everywhere; log in again with the new password.",
+     * operationId="UserController.Reset",
+     * tags={"Users"},
+     * @OA\Parameter(name="apikey", in="query", required=true, @OA\Schema(type="string")),
+     * @OA\RequestBody(
+     *    required=true,
+     *    @OA\JsonContent(
+     *       required={"email","code","password"},
+     *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
+     *       @OA\Property(property="code", type="string", example="123456"),
+     *       @OA\Property(property="password", type="string", format="password", example="new-password"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Password updated",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Password updated, please log in.")
+     *    )
+     * ),
+     * @OA\Response(response=400, description="Invalid or expired reset code")
+     * )
+     */
+    public function reset(Request $request) : JsonResponse{
+
+        $this->validate($request, [
+            'email' => 'required|email|max:255',
+            'code' => 'required|digits:6',
+            'password' => 'required|min:8|max:72'
+        ]);
+
+        $invalid = response()->json(['message' => "Invalid or expired reset code."], 400);
+
+        $user = User::where([["email", $request->email], ["integration_id", $this->integration_id]])->first();
+
+        if(!$user || !$user->reset_code_hash || !$user->reset_expires_at
+            || $user->reset_expires_at->isPast() || $user->reset_attempts >= self::RESET_MAX_ATTEMPTS){
+            return $invalid;
+        }
+
+        if(!Hash::check($request->code, $user->reset_code_hash)){
+            $user->reset_attempts = $user->reset_attempts + 1;
+            $user->save();
+            return $invalid;
+        }
+
+        $user->password = Hash::make($request->password);
+        // sign out everywhere, and make the code single use
+        $user->token = null;
+        $user->reset_code_hash = null;
+        $user->reset_expires_at = null;
+        $user->reset_attempts = 0;
+        $user->save();
+
+        return response()->json(['message' => "Password updated, please log in."]);
     }
 }
