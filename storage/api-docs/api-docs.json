@@ -6,162 +6,6 @@
         "version": "1.0"
     },
     "paths": {
-        "/api/keys/register": {
-            "post": {
-                "tags": [
-                    "Integrations"
-                ],
-                "summary": "Register for new api key",
-                "operationId": "IntegrationController.Register",
-                "requestBody": {
-                    "description": "Pass email and captcha",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "captcha"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "user1@mail.com"
-                                    },
-                                    "captcha": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Registration successful",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "We have emailed you your api key."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/keys/forgot": {
-            "post": {
-                "tags": [
-                    "Integrations"
-                ],
-                "summary": "Resend apikey to email on file",
-                "operationId": "IntegrationController.Forgot",
-                "requestBody": {
-                    "description": "Pass email and captcha",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "captcha"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "user1@mail.com"
-                                    },
-                                    "captcha": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Registration successful",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "We have emailed you your api key again."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/keys/deregister": {
-            "post": {
-                "tags": [
-                    "Integrations"
-                ],
-                "summary": "Delete your developer account",
-                "operationId": "IntegrationController.Deregister",
-                "requestBody": {
-                    "description": "Pass email and code",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "user1@mail.com"
-                                    },
-                                    "code": {
-                                        "type": "string",
-                                        "example": "23445"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Deactivation request received",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "If code not provided, we have emailed you code to complete account deletion."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/todos": {
             "get": {
                 "tags": [
@@ -822,7 +666,7 @@
                                         "format": "email",
                                         "example": "user1@mail.com"
                                     },
-                                    "passord": {
+                                    "password": {
                                         "type": "string",
                                         "format": "password",
                                         "example": "password"
@@ -936,7 +780,7 @@
                                     "name": {
                                         "type": "string"
                                     },
-                                    "passord": {
+                                    "password": {
                                         "type": "string",
                                         "format": "password",
                                         "example": "password"
@@ -1087,6 +931,139 @@
                         "apiAuth": []
                     }
                 ]
+            }
+        },
+        "/api/users/forgot": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Email a password reset code",
+                "description": "Always answers with the same message, whether or not the email has an account. The code is 6 digits, valid for 15 minutes and works once. One request per minute per account, and 20 per day per developer key.",
+                "operationId": "UserController.Forgot",
+                "parameters": [
+                    {
+                        "name": "apikey",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user1@mail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request accepted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "If an account exists for that email, a reset code has been sent."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Daily reset limit for this developer key reached"
+                    }
+                }
+            }
+        },
+        "/api/users/reset": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Set a new password using the emailed code",
+                "description": "The code works once, expires after 15 minutes and is locked after 5 wrong attempts. A successful reset signs the user out everywhere; log in again with the new password.",
+                "operationId": "UserController.Reset",
+                "parameters": [
+                    {
+                        "name": "apikey",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "code",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "new-password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Password updated, please log in."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid or expired reset code"
+                    }
+                }
             }
         }
     },
