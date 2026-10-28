@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Middleware\ApiKeyAuthentication;
-use App\Http\Middleware\AppendCookieMiddleware;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\OriginCheckMiddleware;
 use App\Http\Middleware\SecureHttpMiddleware;
@@ -24,8 +23,7 @@ $router->group(['prefix' => env('APP_DIR'),'middleware' => [
 $router->group(['prefix' => env('APP_DIR'),'middleware' => [
     ApiKeyAuthentication::class,
     SecureHttpMiddleware::class,
-    Authenticate::class,
-    AppendCookieMiddleware::class]
+    Authenticate::class]
     ], function () use ($router) {
         $router->get('users', ['uses' => 'UserController@index']);
 
