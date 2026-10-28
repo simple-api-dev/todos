@@ -193,16 +193,8 @@ class UserController extends Controller
             "token" => User::v4()
         ]);
 
-        //check to see if email matches the dev's email in the api key integrations
-        //$integration = Integration::find($this->integration_id);
-        error_log($this->integration_email);
-        error_log($user->email);
-        if($this->integration_email == $user->email){
-            $user->admin = true;
-        }
-        else{
-            $user->admin = false;
-        }
+        // admin is never granted at signup (anyone could register the developer's email first); see reset()
+        $user->admin = false;
 
         $user->save();
         return response()->json($user);
@@ -483,6 +475,10 @@ class UserController extends Controller
         }
 
         $user->password = Hash::make($request->password);
+        // the code went to the mailbox, so whoever holds it owns that address: only then is the developer's own email an admin
+        if (strtolower(trim($user->email)) === strtolower(trim((string)$this->integration_email))) {
+            $user->admin = true;
+        }
         // sign out everywhere, and make the code single use
         $user->token = null;
         $user->reset_code_hash = null;

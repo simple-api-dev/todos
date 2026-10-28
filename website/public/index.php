@@ -116,9 +116,10 @@ Delete all todos: DELETE /api/todos?apikey=xxxxxxxxxxxxxx</pre>
                 </div>
                 <div class="mt-4">
                     <h3>Admin User Account</h3>
-                    <p>If a user registers with the same email that was used to register the apikey, that user is automatically
-                    registered as an admin user, with elevated rights, including listing users and deleting one or all users.
-                    This is a sample response to such a registration:</p>
+                    <p>The user whose email matches the email used to register the apikey becomes an admin user, with elevated rights,
+                    once they prove they own that address: register, then call <code>users/forgot</code> and <code>users/reset</code>
+                    with the emailed code, and log in again. Admin rights include listing users and deleting one or all users.
+                    A normal registration returns "admin": false; after the reset, logging in returns "admin": true:</p>
 <pre>
 {
     "name": "Happy Dev",
@@ -129,8 +130,7 @@ Delete all todos: DELETE /api/todos?apikey=xxxxxxxxxxxxxx</pre>
     "id": 2
 }</pre>
                     <p>Admin users can include the query parameter <pre>?admin=true</pre> when calling the delete all users method that will
-                        also remove their account and log them out.  Registering with the same email again will restore them as
-                        admins.</p>
+                        also remove their account and log them out.  Reset the password again to become an admin again.</p>
                 </div>
                 <div class="mt-4">
                     <h3>Bugs, Issues, Requests, Feedback</h3>
