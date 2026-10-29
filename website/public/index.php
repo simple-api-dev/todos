@@ -112,17 +112,11 @@ Delete all todos: DELETE /api/todos?apikey=xxxxxxxxxxxxxx</pre>
 
                 <div class="mt-4">
                     <strong>Your own auth service (optional):</strong> if you already have an auth service, or use the
-                    <a class="link" href="https://auth.simpleapi.dev">SimpleAPI Auth API</a>, tell the keys service to use it for this apikey:
-<pre>
-POST https://keys.simpleapi.dev/api/keys/auth-url
-{
-    "apikey": "your key for this API",
-    "product_url": "https://todos.simpleapi.dev",
-    "auth_url": "https://auth.simpleapi.dev/api/users/me?apikey=your-auth-key"
-}</pre>
+                    <a class="link" href="https://auth.simpleapi.dev">SimpleAPI Auth API</a>, set it as the auth URL of this apikey:
+<p>Open the <a class="link" href="https://keys.simpleapi.dev/manage">key manager</a>, log in with an emailed code (no password), and enter the auth URL for that key, for example <code>https://auth.simpleapi.dev/api/users/me?apikey=your-auth-key</code>. Clear the box to switch back.</p>
                     This API then calls your auth URL with <code>Authorization: Bearer &lt;token&gt;</code> and expects <code>200</code> with
                     <code>{"id", "name", "email", "email_verified"}</code> for a valid user, or <code>401</code>. The first time a user is seen a matching user is created here, so
-                    ownership of todos keeps working. Register, login, logout and password reset on this API then answer <code>409</code>. Send <code>"auth_url": null</code> to switch back.
+                    ownership of todos keeps working. Register, login, logout and password reset on this API then answer <code>409</code>.
                     The URL must be https and public, and the answer is cached for a minute.
                 </div>
                 <div class="mt-4">
