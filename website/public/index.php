@@ -144,7 +144,7 @@ Delete all todos: DELETE /api/todos?apikey=xxxxxxxxxxxxxx</pre>
                 <div class="mt-4">
                     <h3>Bugs, Issues, Requests, Feedback</h3>
                     <p class="inline">Chances are things will come up, be it bugs or ideas.  We welcome your feedback.  Please post your
-                        comments <a class="link" href="https://github.com/simple-api-dev/todos/issues">here</a> on our Github page.</p>
+                        comments <a class="link" href="https://github.com/simple-api-dev/home/issues">here</a> on our Github page.</p>
                 </div>
             </div>
         </main>
