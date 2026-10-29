@@ -21,7 +21,8 @@ $app->withFacades();
 
 $app->withEloquent();
 
-if(config('app.env')!= 'production') {
+// API docs (swagger) are switched on by SWAGGER_ENABLED, not by APP_ENV, so APP_ENV can be 'production'
+if(filter_var(env('SWAGGER_ENABLED', true), FILTER_VALIDATE_BOOLEAN)) {
     $app->configure( 'swagger-lume');
     $app->register(\SwaggerLume\ServiceProvider::class);
 }

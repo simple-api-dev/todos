@@ -39,14 +39,16 @@ class ApiKeyAuthentication
         if ($integration === null) {
             try {
                 $url = env("INTEGRATION_URL") . "?api=" . urlencode($key) . "&product_url=" . urlencode(env("APP_URL"));
-                $response = Http::timeout(3)->get($url);
+                $response = Http::timeout(3)->withHeaders(['X-Integration-Secret' => (string)env('INTEGRATION_SECRET', '')])->get($url);
 
                 if ($response->getStatusCode() == 200) {
                     $integration = json_decode($response->getBody(), true);
                     Cache::put($cache_key, $integration, self::CACHE_VALID_SECONDS);
                 } else {
                     $integration = false;
-                    Cache::put($cache_key, false, self::CACHE_INVALID_SECONDS);
+                    if ($response->getStatusCode() == 401) {
+                        Cache::put($cache_key, false, self::CACHE_INVALID_SECONDS);
+                    }
                 }
             } catch (ConnectionException $ex) {
                 $integration = false;
